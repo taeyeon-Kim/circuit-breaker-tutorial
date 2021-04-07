@@ -1,0 +1,34 @@
+zuul:
+  routes:
+    hello:
+      path: /hello
+      url: forward:/
+    world:
+      path: /world
+      url: forward:/
+  ratelimit:
+    response-headers: standard
+    behind-proxy: true
+    enabled: true
+    repository: BUCKET4J_HAZELCAST
+#    deny-request:
+#      origins:
+#        - 127.0.0.1
+    default-policy-list: #optional - will apply unless specific policy exists
+      - limit: 20 #optional - request number limit per refresh interval window
+        # quota: 1 #optional - request time limit per refresh interval window (in seconds)
+        refresh-interval: 60 #default value (in seconds)
+        type: #optional
+          - origin
+    policy-list:
+      hello:
+        - limit: 2
+          refresh-interval: 20
+          type:
+            - origin
+      world:
+        - limit: 4
+          refresh-interval: 20
+          type:
+            - origin
+  strip-prefix: false
